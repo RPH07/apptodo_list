@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quest Mandiri || App todo list </title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/app.js"></script>
+    <script src="https://kit.fontawesome.com/7bc0a56e07.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <div id="app">
+        <!-- Dark-mode -->
+        <div style="color: #66c7e7;">
+            <input type="checkbox" id="toggle-theme">
+            <label class="check-label" for="toggle-theme" style="cursor: pointer;">
+                <p><i class="fa-solid fa-sun">Light</i></p>
+            </label>
+        </div>
+    
+        <!-- Section tambah aktivitas baru -->
+        <section>
+            <h2>➕ Tambah Tugas Baru ➕</h2>
+            <input type="text" v-model="newActivityName" placeholder="Nama tugas" class="newItem">
+            <button @click="addActivity" class="tambah-btn">➕ Tambah</button>
+        </section>
+        <hr>
+    
+        <!-- Section Daftar aktivitas -->
+        <section v-show="activities.filter(a => !a.complete).length">
+            <h2>📝 Tugas ku: 📝</h2>
+            <ul>
+                <li v-for="activity in activities.filter(a => !a.complete)" :key="activity.id">
+                    <input type="checkbox" v-model="activity.complete" class="check-task">
+                    <span v-if="!activity.editing">{{ activity.name }}</span>
+                    <input v-else type="text" v-model="activity.name">
+                    <button @click="toggleEdit(activity)" class="edit-btn">✏️ Edit</button>
+                </li>
+            </ul>
+        </section>
+        <hr>
+    
+        <!-- Section tugas yang selesai -->
+        <section v-show="activities.filter(a => a.complete).length">
+            <h2>✅ Tugas yang selesai: ✅</h2>
+            <ul>
+                <li v-for="activity in activities.filter(a => a.complete)" :key="activity.id">
+                    <input type="checkbox" v-model="activity.complete">
+                    <span :class="{ completed: activity.complete }">{{ activity.name }}</span>
+                    <button @click="deleteActivity(activity.id)" class="hapus-btn">✖️ Hapus</button>
+                </li>
+            </ul>
+        </section>
+    
+        
+        <p class="indikator" :style="{ color: activities.filter(a => !a.complete).length >= 10 ? 'red' : activities.filter(a => !a.complete).length >= 5 ? 'orange' : 'green' }">
+            {{ 
+                activities.filter(a => !a.complete).length >= 10 ? '🤯 Waduh, Tugas kamu masih banyak nih! Tapi tenang saja aku yakin tugasnya bisa kamu selesaikan!.' : 
+                activities.filter(a => !a.complete).length >= 5 ? '😨 Tugas kamu lumayan banyak nih!, Selesain gih sebelum menumpuk.' : 
+                activities.filter(a => !a.complete).length > 0 ? '🙌 Tugas kamu sedikit lagi selesai!' : '🎉 Yeyyy! Kamu telah menyelesaikan semua tugasnya!' 
+            }}
+        </p>
+        
+        
+    </div>
+    
+    <script>
+    const app = Vue.createApp({
+        data() {
+            return {
+                activities: [],
+                newActivityName: ""
+            }
+        },
+        methods: {
+            addActivity() {
+                if (this.newActivityName.trim() !== "") {
+                    this.activities.push({
+                        name: this.newActivityName,
+                        complete: false,
+                        id: Date.now(),
+                        editing: false
+                    });
+                    this.newActivityName = "";
+                    this.saveToLocalStorage();
+                }
+            },
+    
+            saveToLocalStorage(){
+                localStorage.setItem('activities', JSON.stringify(this.activities))
+            },
+    
+            loadFromLocalStorage(){
+                const savedActivities = JSON.parse(localStorage.getItem('activities'));
+                if (savedActivities) {
+                    this.activities = savedActivities;
+                }
+            },
+    
+            updateActivity(activity) {
+                this.saveToLocalStorage();
+                if (!activity.complete) {
+                    activity.editing = false;
+                }
+            },
+    
+            toggleEdit(activity) {
+                activity.editing = !activity.editing;
+            },
+    
+            deleteActivity(id) {
+                this.activities = this.activities.filter(activity => activity.id !== id);
+            }
+        },
+        mounted() {
+            this.loadFromLocalStorage();
+        }
+    }).mount('#app')
+    </script>
+    
+</body>
+</html>
