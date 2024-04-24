@@ -54,6 +54,7 @@
                     <button @click="deleteActivity(activity.id)" class="hapus-btn">✖️ Hapus</button>
                 </li>
             </ul>
+            <button @click="deleteCompleteActivities">🗑️ Hapus Semua Tugas Selesai</button>
         </section>
     
         
@@ -115,6 +116,13 @@
             deleteActivity(id) {
                 if (confirm("Apakah kamu yakin ingin menghapus tugas ini?")) {
                     this.activities = this.activities.filter(activity => activity.id !== id);
+                    this.saveToLocalStorage();
+                }
+            },
+
+            deleteCompleteActivities() {
+                if (confirm("Apakah kamu yakin ingin menghapus semua tugas ini?")) {
+                    this.activities = this.activities.filter(activity => !activity.complete);
                     this.saveToLocalStorage();
                 }
             }
