@@ -104,6 +104,29 @@ h2{
     border-radius: 20px;
 }
 
+.hapus-semua-btn{
+    
+    display: flex;
+    margin: auto;
+    margin-top: 10px;
+    padding: 10px;
+    align-items: center;
+    justify-content: center;
+    background-color: #98d6ea;
+    color: #fff;
+    border-radius: 12px;
+    border: 2px solid #f0ecec;
+    cursor: pointer;
+    transition: background-color 0.5s ease;
+}
+
+.hapus-semua-btn:hover{
+    background-color: #66c7e7;
+    color: #f0ecec;
+    border: 2px solid #f0ecec;
+    border-radius: 20px;
+}
+
 ul li{
     list-style: none;
 }
