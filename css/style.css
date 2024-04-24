@@ -17,6 +17,8 @@ body {
     border: 2px solid #f0ecec;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 400px;
+    overflow-y: auto;
+    max-height: calc(100vh - 100px);
     
 }
 
