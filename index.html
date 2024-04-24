@@ -35,7 +35,7 @@
             <h2>📝 Tugas ku: 📝</h2>
             <ul>
                 <li v-for="activity in activities.filter(a => !a.complete)" :key="activity.id">
-                    <input type="checkbox" v-model="activity.complete" class="check-task">
+                    <input type="checkbox" v-model="activity.complete" @change="updateActivity(activity)">
                     <span v-if="!activity.editing">{{ activity.name }}</span>
                     <input v-else type="text" v-model="activity.name">
                     <button @click="toggleEdit(activity)" class="edit-btn">✏️ Edit</button>
@@ -49,12 +49,12 @@
             <h2>✅ Tugas yang selesai: ✅</h2>
             <ul>
                 <li v-for="activity in activities.filter(a => a.complete)" :key="activity.id">
-                    <input type="checkbox" v-model="activity.complete">
+                    <input type="checkbox" v-model="activity.complete" @change="updateActivity(activity)">
                     <span :class="{ completed: activity.complete }">{{ activity.name }}</span>
                     <button @click="deleteActivity(activity.id)" class="hapus-btn">✖️ Hapus</button>
                 </li>
             </ul>
-            <button @click="deleteCompleteActivities">🗑️ Hapus Semua Tugas Selesai</button>
+            <button @click="deleteAllCompletedActivities" class="hapus-semua-btn">🗑️ Hapus Semua Tugas Selesai</button>
         </section>
     
         
@@ -104,9 +104,6 @@
     
             updateActivity(activity) {
                 this.saveToLocalStorage();
-                if (!activity.complete) {
-                    activity.editing = false;
-                }
             },
     
             toggleEdit(activity) {
@@ -114,16 +111,16 @@
             },
     
             deleteActivity(id) {
-                if (confirm("Apakah kamu yakin ingin menghapus tugas ini?")) {
+                if (confirm("Apakah kamu sudah yakin ingin menghapus tugas ini?")) {
                     this.activities = this.activities.filter(activity => activity.id !== id);
                     this.saveToLocalStorage();
                 }
             },
 
-            deleteCompleteActivities() {
-                if (confirm("Apakah kamu yakin ingin menghapus semua tugas ini?")) {
-                    this.activities = this.activities.filter(activity => !activity.complete);
-                    this.saveToLocalStorage();
+            deleteAllCompletedActivities() {
+                if (confirm("Apakah Anda yakin ingin menghapus semua tugas yang sudah selesai?")) {
+                this.activities = this.activities.filter(activity => !activity.complete);
+                this.saveToLocalStorage();
                 }
             }
         },
